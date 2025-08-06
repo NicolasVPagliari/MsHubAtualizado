@@ -1,8 +1,11 @@
 package com.github.cidarosa.ms_pedido.controller;
 
 import com.github.cidarosa.ms_pedido.dto.PedidoDTO;
+import com.github.cidarosa.ms_pedido.dto.StatusDTO;
+import com.github.cidarosa.ms_pedido.entities.Status;
 import com.github.cidarosa.ms_pedido.service.PedidoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +69,23 @@ public class PedidoController {
 
         service.deletePedido(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/pago")
+    public ResponseEntity<String> aprovarPagamentoDoPedido(@PathVariable
+                                                           @NotNull Long id) {
+
+        service.aprovarPagamento(id);
+        String msg = "Pedido pago, aguardar confirmação de pagamento";
+        return ResponseEntity.ok().body(msg);
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<PedidoDTO> updatePedidoStatus(@PathVariable Long id,
+                                                        @RequestBody StatusDTO statusDTO) {
+
+        PedidoDTO dto = service.updatePedidoStatus(id, statusDTO);
+        return ResponseEntity.ok(dto);
     }
 
 

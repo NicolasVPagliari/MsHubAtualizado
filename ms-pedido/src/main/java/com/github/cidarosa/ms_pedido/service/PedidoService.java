@@ -2,6 +2,7 @@ package com.github.cidarosa.ms_pedido.service;
 
 import com.github.cidarosa.ms_pedido.dto.ItemDoPedidoDTO;
 import com.github.cidarosa.ms_pedido.dto.PedidoDTO;
+import com.github.cidarosa.ms_pedido.dto.StatusDTO;
 import com.github.cidarosa.ms_pedido.entities.ItemDoPedido;
 import com.github.cidarosa.ms_pedido.entities.Pedido;
 import com.github.cidarosa.ms_pedido.entities.Status;
@@ -101,6 +102,32 @@ public class PedidoService {
             itens.add(itemDoPedido);
         }
         entity.setItens(itens);
+    }
+
+    @Transactional
+    public void aprovarPagamento(Long id) {
+
+        Pedido pedido = repository.getPedidoByIdWithItems(id);
+        if (pedido == null) {
+            throw new ResourceNotFoundException("Pedido id: " + id + " não encontrado");
+        }
+
+        pedido.setStatus(Status.PAGO);
+        repository.updatePedido(Status.PAGO, pedido);
+    }
+
+    @Transactional
+    public PedidoDTO updatePedidoStatus(Long id, StatusDTO statusDTO) {
+
+        Pedido pedido = repository.getPedidoByIdWithItems(id);
+        if (pedido == null) {
+            throw new ResourceNotFoundException("Pedido id: " + id + " não encontrado");
+        }
+
+        pedido.setStatus(statusDTO.getStatus());
+        repository.updatePedido(statusDTO.getStatus(), pedido);
+        return new PedidoDTO(pedido);
+
     }
 
 }
