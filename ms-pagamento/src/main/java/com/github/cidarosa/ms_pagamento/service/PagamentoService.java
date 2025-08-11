@@ -7,6 +7,7 @@ import com.github.cidarosa.ms_pagamento.http.PedidoCliente;
 import com.github.cidarosa.ms_pagamento.repository.PagamentoRepository;
 import com.github.cidarosa.ms_pagamento.service.exceptions.DatabaseException;
 import com.github.cidarosa.ms_pagamento.service.exceptions.ResourceNotFoundException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -89,6 +90,17 @@ public class PagamentoService {
         pagamento.get().setStatus(Status.CONFIRMADO);
         repository.save(pagamento.get());
         pedidoCliente.atualizarPagamentoDoPedido(pagamento.get().getPedidoId());
+    }
+
+    @Transactional
+    public void alterarStatusDoPagamento(Long id) {
+        Optional<Pagamento> pagamento = repository.findById(id);
+        if (pagamento.isEmpty()) {
+            throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
+        }
+
+        pagamento.get().setStatus(Status.CONFIRMACAO_PENDENTE);
+        repository.save(pagamento.get());
     }
 
     private void copyDtoToEntity(PagamentoDTO dto, Pagamento entity) {
