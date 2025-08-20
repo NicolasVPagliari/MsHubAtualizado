@@ -85,7 +85,7 @@ public class PedidoController {
     public ResponseEntity<String> aprovarPagamentoDoPedido(@PathVariable
                                                            @NotNull Long id) {
 
-        service.aprovarPagamento(id);
+        service.aprovarPagamentoDoPedido(id);
         String msg = "Pedido pago, aguardar confirmação de pagamento";
         return ResponseEntity.ok().body(msg);
     }

@@ -105,7 +105,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public void aprovarPagamento(Long id) {
+    public void aprovarPagamentoDoPedido(Long id) {
 
         Pedido pedido = repository.getPedidoByIdWithItems(id);
         if (pedido == null) {
